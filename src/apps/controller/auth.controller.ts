@@ -1,9 +1,9 @@
-const { OAuth2Client } = require("google-auth-library");
-const axios = require("axios").default;
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const crypto = require("crypto");
-const db = require("../models");
+import { OAuth2Client } from "google-auth-library";
+import axios from "axios";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import crypto from "crypto";
+import db from "../models";
 
 const { sequelize } = db;
 const {
@@ -21,9 +21,9 @@ const UsersTokens = db.usersTokens;
 const UsersSession = db.usersSession;
 const UsersOauth = db.usersOauth;
 
-const jwtSecret = process.env.JWT_SECRET;
+const jwtSecret: string = process.env.JWT_SECRET as string;
 
-const createJWToken = (userId) => {
+const createJWToken = (userId: string) => {
   const rawToken = {
     selector: crypto.randomBytes(10).toString("hex"),
     token: crypto.randomBytes(25).toString("hex"),
@@ -37,7 +37,7 @@ const createJWToken = (userId) => {
   return result;
 };
 
-exports.createNewAccount = async (req, res) => {
+exports.createNewAccount = async (req: any, res: any) => {
   const { email, password, firstName, lastName } = req.body;
 
   const existUser = await Users.findOne({
@@ -61,7 +61,7 @@ exports.createNewAccount = async (req, res) => {
   const hashedNewPwd = bcrypt.hashSync(password, 8);
 
   const transaction = await sequelize.transaction();
-  let userData = {};
+  let userData: any = {};
   try {
     userData = await Users.create(
       {
@@ -92,7 +92,7 @@ exports.createNewAccount = async (req, res) => {
   return res.sendStatus(200);
 };
 
-exports.resendVerification = async (req, res) => {
+exports.resendVerification = async (req: any, res: any) => {
   const { email } = req.body;
 
   const userData = await Users.findOne({ where: { email: email } });
@@ -104,7 +104,7 @@ exports.resendVerification = async (req, res) => {
   return res.sendStatus(200);
 };
 
-exports.verifyEmail = async (req, res) => {
+exports.verifyEmail = async (req: any, res: any) => {
   const { tokens } = req.params;
 
   const tokenData = await UsersTokens.findOne({ where: { tokens } });
@@ -145,7 +145,7 @@ exports.verifyEmail = async (req, res) => {
   return res.status(200).send({ authToken: jwtResult.jwtToken });
 };
 
-exports.doLogin = async (req, res) => {
+exports.doLogin = async (req: any, res: any) => {
   const { email, password } = req.body;
 
   if (!email && !password)
@@ -198,14 +198,14 @@ exports.doLogin = async (req, res) => {
   return res.status(200).send({ authToken: jwtResult.jwtToken });
 };
 
-exports.checkAuth = async (req, res, next) => {
+exports.checkAuth = async (req: any, res: any, next: any) => {
   const authToken = req.headers.authtoken;
   if (!authToken)
     return res
       .status(401)
       .send({ error: "Access Denied, authToken not found!" });
 
-  let result = {};
+  let result: any = {};
   try {
     result = jwt.verify(authToken, jwtSecret);
   } catch (e) {
@@ -235,7 +235,7 @@ exports.checkAuth = async (req, res, next) => {
   return next();
 };
 
-exports.doLogout = async (req, res) => {
+exports.doLogout = async (req: any, res: any) => {
   const { userId, sessionsId } = req;
 
   await UsersSession.destroy({
@@ -248,19 +248,19 @@ exports.doLogout = async (req, res) => {
   return res.sendStatus(200);
 };
 
-exports.doLoginOauth = async (req, res) => {
+exports.doLoginOauth = async (req: any, res: any) => {
   const { type, jwtToken } = req.body;
-  let userId = "";
-  let oauthUserId = "";
-  let oauthEmail = "";
-  let firstName = "";
-  let lastName = "";
-  let payload = "";
+  let userId: string = "";
+  let oauthUserId: string = "";
+  let oauthEmail: string = "";
+  let firstName: string = "";
+  let lastName: string = "";
+  let payload: any = "";
 
   console.log(type);
   if (type === "Google") {
     const client = await new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-    let ticket = {};
+    let ticket: any = {};
     try {
       ticket = await client.verifyIdToken({
         idToken: jwtToken,
@@ -279,16 +279,16 @@ exports.doLoginOauth = async (req, res) => {
     oauthEmail = payload.email;
   } else if (type === "Facebook") {
     // request Facebook access_token
-    const fbRequest = await axios
+    const fbRequest: any = await axios
       .get(
         `https://graph.facebook.com/oauth/access_token?client_id=${process.env.FB_APP_ID}&client_secret=${process.env.FB_APP_SECRET}&grant_type=client_credentials`
       )
       .catch((e) => {
         console.log(e);
       });
-    const fbAccessToken = fbRequest.data.access_token;
+    const fbAccessToken: any = fbRequest.data.access_token;
 
-    const checkFbToken = await axios
+    const checkFbToken: any = await axios
       .get(
         `https://graph.facebook.com/debug_token?input_token=${jwtToken}&access_token=${fbAccessToken}`
       )
@@ -299,7 +299,7 @@ exports.doLoginOauth = async (req, res) => {
     if (!checkFbToken.data.data.is_valid) return res.sendStatus(400);
     oauthUserId = checkFbToken.data.data.user_id;
 
-    const fbProfileData = await axios
+    const fbProfileData: any = await axios
       .get(
         `https://graph.facebook.com/me?fields=id,name,email&access_token=${jwtToken}`
       )
@@ -351,7 +351,7 @@ exports.doLoginOauth = async (req, res) => {
     console.log("email not exist, create user & oauth");
 
     const transaction = await sequelize.transaction();
-    let userData = {};
+    let userData: any = {};
     try {
       userData = await Users.create(
         {

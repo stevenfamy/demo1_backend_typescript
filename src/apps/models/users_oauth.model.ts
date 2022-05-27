@@ -1,6 +1,6 @@
-module.exports = (sequelize, Sequelize) => {
-  const usersTokens = sequelize.define(
-    "users_tokens",
+module.exports = (sequelize: any, Sequelize: any) => {
+  const usersOauth = sequelize.define(
+    "users_oauth",
     {
       id: {
         type: Sequelize.STRING(36),
@@ -10,17 +10,15 @@ module.exports = (sequelize, Sequelize) => {
       user_id: {
         type: Sequelize.STRING(36),
       },
-      tokens: {
-        type: Sequelize.STRING(255),
+      type: {
+        type: Sequelize.STRING(10),
       },
-      created_on: {
+      oauth_user_id: {
+        type: Sequelize.STRING(36),
+      },
+      connected_at: {
         type: Sequelize.INTEGER,
-      },
-      expired_on: {
-        type: Sequelize.INTEGER,
-      },
-      token_type: {
-        type: Sequelize.STRING(20),
+        defaultValue: 0,
       },
     },
     {
@@ -29,5 +27,5 @@ module.exports = (sequelize, Sequelize) => {
     }
   );
 
-  return usersTokens;
+  return usersOauth;
 };

@@ -14,7 +14,7 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   },
 });
 
-const db = {};
+const db: any = {};
 
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
@@ -24,4 +24,4 @@ db.usersTokens = require("./users_tokens.model")(sequelize, Sequelize);
 db.usersSession = require("./users_session.model")(sequelize, Sequelize);
 db.usersOauth = require("./users_oauth.model")(sequelize, Sequelize);
 
-module.exports = db;
+export default db;

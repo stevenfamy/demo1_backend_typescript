@@ -1,8 +1,8 @@
-const PassVal = require("password-validator");
-const db = require("../models");
+import PassVal from "password-validator";
+import db from "../models";
 
 const Users = db.users;
-exports.checkPasswordRequirement = async (password) => {
+export const checkPasswordRequirement = async (password: string) => {
   const passReq = new PassVal();
 
   passReq
@@ -34,4 +34,5 @@ exports.checkPasswordRequirement = async (password) => {
   return result;
 };
 
-exports.getUserByEmail = async (email) => Users.findOne({ where: { email } });
+export const getUserByEmail = async (email: string) =>
+  Users.findOne({ where: { email } });

@@ -1,4 +1,4 @@
-module.exports = (sequelize, Sequelize) => {
+module.exports = (sequelize: any, Sequelize: any) => {
   const user = sequelize.define(
     "users",
     {

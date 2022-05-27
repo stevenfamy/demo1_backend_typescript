@@ -1,19 +1,19 @@
-const { DateTime } = require("luxon");
-const bcrypt = require("bcryptjs");
-const Sequelize = require("sequelize");
-const { Op } = require("sequelize");
-const db = require("../models");
+import { DateTime } from "luxon";
+import bcrypt from "bcryptjs";
+import Sequelize from "sequelize";
+import { Op } from "sequelize";
+import db from "../models";
 
 const { sequelize } = db;
-const {
+import {
   checkPasswordRequirement,
   getUserByEmail,
-} = require("../helpers/users.helper");
-const {
+} from "../helpers/users.helper";
+import {
   createConfirmationEmail,
   resendConfirmationEmail,
-} = require("../helpers/email.helper");
-const { convertTimestamp } = require("../helpers/general.helper");
+} from "../helpers/email.helper";
+import { convertTimestamp } from "../helpers/general.helper";
 
 const Users = db.users;
 const UsersProfile = db.usersProfile;
@@ -24,7 +24,7 @@ const UsersOauth = db.usersOauth;
 Users.hasOne(UsersProfile, { foreignKey: "user_id" });
 Users.hasMany(UsersSession, { foreignKey: "user_id" });
 
-exports.getProfile = async (req, res) => {
+exports.getProfile = async (req: any, res: any) => {
   const { userId } = req;
 
   const userProfileData = await UsersProfile.findOne({
@@ -41,7 +41,7 @@ exports.getProfile = async (req, res) => {
   });
 };
 
-exports.putProfile = async (req, res) => {
+exports.putProfile = async (req: any, res: any) => {
   const { userId } = req;
   const { firstName, lastName } = req.body;
 
@@ -63,7 +63,7 @@ exports.putProfile = async (req, res) => {
   return res.sendStatus(200);
 };
 
-exports.hasPassword = async (req, res) => {
+exports.hasPassword = async (req: any, res: any) => {
   const { userId } = req;
 
   const userData = await Users.findOne({ where: { id: userId } });
@@ -71,7 +71,7 @@ exports.hasPassword = async (req, res) => {
   return res.status(200).send({ password: !!userData.password });
 };
 
-exports.changePassword = async (req, res) => {
+exports.changePassword = async (req: any, res: any) => {
   const { userId } = req;
   const { password, newPassword, confirmNewPassword } = req.body;
 
@@ -94,7 +94,7 @@ exports.changePassword = async (req, res) => {
       error: "New password cannot be the same with current password!",
     });
 
-  const checkPasswordResult = await checkPasswordRequirement(newPassword);
+  const checkPasswordResult: any = await checkPasswordRequirement(newPassword);
   if (checkPasswordResult.length)
     return res
       .status(400)
@@ -108,7 +108,7 @@ exports.changePassword = async (req, res) => {
   return res.sendStatus(200);
 };
 
-exports.createPassword = async (req, res) => {
+exports.createPassword = async (req: any, res: any) => {
   const { userId } = req;
   const { newPassword, confirmNewPassword } = req.body;
 
@@ -122,7 +122,7 @@ exports.createPassword = async (req, res) => {
   if (userData.password)
     return res.status(400).send({ error: "Account already has password!" });
 
-  const checkPasswordResult = await checkPasswordRequirement(newPassword);
+  const checkPasswordResult: any = await checkPasswordRequirement(newPassword);
   if (checkPasswordResult.length)
     return res
       .status(400)
@@ -136,7 +136,7 @@ exports.createPassword = async (req, res) => {
   return res.sendStatus(200);
 };
 
-exports.getUserList = async (req, res) => {
+exports.getUserList = async (req: any, res: any) => {
   const usersList = await Users.findAll({
     include: [
       {
@@ -152,9 +152,9 @@ exports.getUserList = async (req, res) => {
       },
     ],
     attributes: ["id", "email", "last_login", "created_on", "total_login"],
-  }).then(async (results) =>
+  }).then(async (results: any) =>
     Promise.all(
-      results.map(async ({ dataValues }) => ({
+      results.map(async ({ dataValues }: any) => ({
         ...dataValues,
         last_login: dataValues.last_login
           ? await convertTimestamp(dataValues.last_login)
@@ -175,7 +175,7 @@ exports.getUserList = async (req, res) => {
   return res.status(200).send({ userList: usersList });
 };
 
-exports.getUserStat = async (req, res) => {
+exports.getUserStat = async (req: any, res: any) => {
   const temp0 = DateTime.now().toISODate();
   const todayTimestamp = DateTime.fromISO(
     `${temp0}T00:00:00+00:00`

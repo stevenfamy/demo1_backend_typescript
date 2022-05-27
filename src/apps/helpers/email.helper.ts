@@ -1,15 +1,15 @@
-const SibApiV3Sdk = require("sib-api-v3-sdk");
-const crypto = require("crypto");
-const db = require("../models");
+import SibApiV3Sdk from "@sendinblue/client";
+import crypto from "crypto";
+import db from "../models";
 
 const Users = db.users;
 const UsersProfile = db.usersProfile;
 const UsersTokens = db.usersTokens;
 
-exports.createConfirmationEmail = async (userId) => {
-  const defaultClient = SibApiV3Sdk.ApiClient.instance;
-  const apiKey = defaultClient.authentications["api-key"];
-  apiKey.apiKey = process.env.SENDINBLUE_APIKEY;
+export const createConfirmationEmail = async (userId: string) => {
+  const defaultClient = new SibApiV3Sdk.AccountApi();
+  const apiKey: string = process.env.SENDINBLUE_APIKEY as string;
+  defaultClient.setApiKey(SibApiV3Sdk.AccountApiApiKeys.apiKey, apiKey);
 
   const userData = await Users.findOne({
     where: {
@@ -60,10 +60,10 @@ exports.createConfirmationEmail = async (userId) => {
   return sendEmail;
 };
 
-exports.resendConfirmationEmail = async (userId) => {
-  const defaultClient = SibApiV3Sdk.ApiClient.instance;
-  const apiKey = defaultClient.authentications["api-key"];
-  apiKey.apiKey = process.env.SENDINBLUE_APIKEY;
+export const resendConfirmationEmail = async (userId: string) => {
+  const defaultClient = new SibApiV3Sdk.AccountApi();
+  const apiKey: string = process.env.SENDINBLUE_APIKEY as string;
+  defaultClient.setApiKey(SibApiV3Sdk.AccountApiApiKeys.apiKey, apiKey);
 
   const userData = await Users.findOne({
     where: {

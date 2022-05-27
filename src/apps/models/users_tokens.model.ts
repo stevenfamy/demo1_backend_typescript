@@ -1,6 +1,6 @@
-module.exports = (sequelize, Sequelize) => {
-  const usersSession = sequelize.define(
-    "users_session",
+module.exports = (sequelize: any, Sequelize: any) => {
+  const usersTokens = sequelize.define(
+    "users_tokens",
     {
       id: {
         type: Sequelize.STRING(36),
@@ -10,21 +10,17 @@ module.exports = (sequelize, Sequelize) => {
       user_id: {
         type: Sequelize.STRING(36),
       },
-      selector: {
-        type: Sequelize.STRING(255),
-      },
-      hashed_token: {
+      tokens: {
         type: Sequelize.STRING(255),
       },
       created_on: {
         type: Sequelize.INTEGER,
       },
-      session_method: {
-        type: Sequelize.STRING(10),
-      },
-      last_seen: {
+      expired_on: {
         type: Sequelize.INTEGER,
-        defaultValue: 0,
+      },
+      token_type: {
+        type: Sequelize.STRING(20),
       },
     },
     {
@@ -33,5 +29,5 @@ module.exports = (sequelize, Sequelize) => {
     }
   );
 
-  return usersSession;
+  return usersTokens;
 };
