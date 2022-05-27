@@ -6,14 +6,14 @@ import crypto from "crypto";
 import db from "../models";
 
 const { sequelize } = db;
-const {
+import {
   checkPasswordRequirement,
   getUserByEmail,
-} = require("../helpers/users.helper");
-const {
+} from "../helpers/users.helper";
+import {
   createConfirmationEmail,
   resendConfirmationEmail,
-} = require("../helpers/email.helper");
+} from "../helpers/email.helper";
 
 const Users = db.users;
 const UsersProfile = db.usersProfile;
@@ -52,7 +52,7 @@ exports.createNewAccount = async (req: any, res: any) => {
       Email_verification: existUser.verification,
     });
 
-  const checkPasswordResult = await checkPasswordRequirement(password);
+  const checkPasswordResult: any = await checkPasswordRequirement(password);
   if (checkPasswordResult.length)
     return res
       .status(400)

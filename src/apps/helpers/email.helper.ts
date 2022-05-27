@@ -105,3 +105,5 @@ export const resendConfirmationEmail = async (userId: string) => {
   }
   return true;
 };
+
+module.exports = { createConfirmationEmail, resendConfirmationEmail };

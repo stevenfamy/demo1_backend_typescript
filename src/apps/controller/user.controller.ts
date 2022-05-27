@@ -9,10 +9,6 @@ import {
   checkPasswordRequirement,
   getUserByEmail,
 } from "../helpers/users.helper";
-import {
-  createConfirmationEmail,
-  resendConfirmationEmail,
-} from "../helpers/email.helper";
 import { convertTimestamp } from "../helpers/general.helper";
 
 const Users = db.users;
