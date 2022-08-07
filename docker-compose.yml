@@ -2,8 +2,8 @@ version: "3.3"
 
 services:
   aha-backend-main:
-    image: stevenfamy/aha-backend-test:latest
-    container_name: aha-backend-main
+    image: stevenfamy/demo1-backend-typescript:latest
+    container_name: demo1-backend-typescript
     ports:
       - 5000:5000
     restart: unless-stopped
